@@ -13,27 +13,27 @@ public class TestRedis {
   public void test1() throws RedisOperationException, InterruptedException {
     final BasicRedisOperation bro = new BasicRedisOperation("/redis.site.properties");
 
-    Thread t;
-    int threadCount = 1000;
-    final CountDownLatch latch = new CountDownLatch(threadCount);
-    for (int i = 0; i < threadCount; i++) {
-      t = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          int c = 0, cnt = 100;
-          while (c < cnt) {
-            try {
-              System.out.println(bro.get("a"));
-              ++c;
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          }
-          latch.countDown();
-        }
-      });
-      t.start();
-    }
-    latch.await();
+//    Thread t;
+//    int threadCount = 1000;
+//    final CountDownLatch latch = new CountDownLatch(threadCount);
+//    for (int i = 0; i < threadCount; i++) {
+//      t = new Thread(new Runnable() {
+//        @Override
+//        public void run() {
+//          int c = 0, cnt = 100;
+//          while (c < cnt) {
+//            try {
+//              System.out.println(bro.get("a"));
+//              ++c;
+//            } catch (Exception e) {
+//              e.printStackTrace();
+//            }
+//          }
+//          latch.countDown();
+//        }
+//      });
+//      t.start();
+//    }
+//    latch.await();
   }
 }

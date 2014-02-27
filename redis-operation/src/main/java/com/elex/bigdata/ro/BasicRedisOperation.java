@@ -37,11 +37,19 @@ public class BasicRedisOperation implements RedisOperation {
 
   @Override
   public void set(String key, String value) throws RedisOperationException {
+    set(key, value, -1);
+  }
+
+  @Override
+  public void set(String key, String value, int seconds) throws RedisOperationException {
     boolean successful = true;
     ShardedJedis shardedJedis = null;
     try {
       shardedJedis = manager.borrowShardedJedis();
       shardedJedis.set(key, value);
+      if (seconds > 0) {
+        shardedJedis.expire(key, seconds);
+      }
     } catch (Exception e) {
       successful = false;
       throw new RedisOperationException(e);

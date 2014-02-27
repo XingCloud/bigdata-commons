@@ -9,5 +9,7 @@ public interface RedisOperation {
 
   public void set(String key, String value) throws RedisOperationException;
 
+  public void set(String key, String value, int expire) throws RedisOperationException;
+
   public boolean exist(String key) throws RedisOperationException;
 }

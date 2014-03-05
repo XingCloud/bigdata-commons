@@ -23,6 +23,11 @@ public class BasicRedisShardedPoolManager {
     this.id = id;
   }
 
+  public BasicRedisShardedPoolManager(String id,String classPathConf){
+    this.id=id;
+    this.init("/redis.default.properties", classPathConf);
+  }
+
   protected void init(String defaultConfFile, String classpathFile) {
     if (pool != null) {
       return;

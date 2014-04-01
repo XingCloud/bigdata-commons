@@ -7,6 +7,7 @@ import org.apache.commons.configuration.Configuration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Author: liqiang
@@ -17,10 +18,12 @@ import java.util.Map;
 public class MetricMapping {
 
     private static final String DEFAULT_PROJECT_PATH = "/project.properties";
+    public static final String DOMAIN_SEPARATOR = ".";
 
     private static final Map<String,Byte> projectMapping= new HashMap<String,Byte>();
 
     private static MetricMapping instance ;
+    private static Pattern domain;
 
     private MetricMapping(String path){
         loadConfig(path,projectMapping);
@@ -40,8 +43,20 @@ public class MetricMapping {
         return instance;
     }
 
-    public Byte getProjectURLByte(String url){
-        return projectMapping.get(url.toLowerCase());
+    public Byte getProjectURLByte(String projectName){
+        Byte pid = projectMapping.get(projectName.toLowerCase());
+        if(pid == null){
+            int start = projectName.indexOf(DOMAIN_SEPARATOR);
+            if(start > 0){
+                int end = projectName.lastIndexOf(DOMAIN_SEPARATOR,start+1);
+                if(end > 0 && start > end){
+                    String domain = projectName.substring(start,end);
+                    pid = projectMapping.get(domain.toLowerCase());
+                }
+            }
+
+        }
+        return pid;
     }
 
     private void loadConfig(String path,Map<String,Byte> mapping) {

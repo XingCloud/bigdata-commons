@@ -49,7 +49,7 @@ public class MetricMapping {
             int start = projectName.indexOf(DOMAIN_SEPARATOR);
             if(start > 0){
                 int end = projectName.lastIndexOf(DOMAIN_SEPARATOR,start+1);
-                if(end > 0 && start > end){
+                if(end > 0 && end > start){
                     String domain = projectName.substring(start,end);
                     pid = projectMapping.get(domain.toLowerCase());
                 }

@@ -40,7 +40,7 @@ public class MetricMapping {
         return instance;
     }
 
-    public byte getProjectURLByte(String url){
+    public Byte getProjectURLByte(String url){
         return projectMapping.get(url.toLowerCase());
     }
 

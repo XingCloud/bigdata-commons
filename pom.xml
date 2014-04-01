@@ -12,6 +12,7 @@
     <module>confutil</module>
     <module>redis-operation</module>
     <module>hashing</module>
+    <module>metricmapping</module>
   </modules>
 
 

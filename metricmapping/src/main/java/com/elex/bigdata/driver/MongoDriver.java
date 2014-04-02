@@ -17,7 +17,7 @@ public class MongoDriver {
     private Mongo mongo;
     private DB db;
     public DBCollection nationColl;
-    private static final String mongodbHost = "65.255.35.156";
+    private static final String mongodbHost = "web156";
     private static final int mongodbPort = 27017;
     private static final String mongodbDBName = "bigdata";
     private static final String nationCollectionName = "nation";

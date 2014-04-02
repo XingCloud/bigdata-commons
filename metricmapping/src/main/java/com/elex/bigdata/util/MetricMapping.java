@@ -2,11 +2,15 @@ package com.elex.bigdata.util;
 
 
 import com.elex.bigdata.conf.Config;
+import com.elex.bigdata.driver.MongoDriver;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.StringUtils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -26,6 +30,7 @@ public class MetricMapping {
     private static Pattern domain;
 
     private MetricMapping(String path){
+        //注意： 目前只用一个byte表示项目，范围为-127 +127，配置的时候得注意
         loadConfig(path,projectMapping);
     }
 
@@ -68,8 +73,59 @@ public class MetricMapping {
         }
     }
 
+    public static Set<String> getNationsByProjectID(Byte pbid){
+        DBObject queryObject = new BasicDBObject();
+
+        if(pbid != null){
+            queryObject.put("pbid",pbid.intValue());
+        }
+        DBCollection nationColl = MongoDriver.getNationCollection();
+        DBCursor dc = nationColl.find(queryObject);
+        Set<String> nations = new HashSet<String>();
+        if(dc.size() >0){
+            while(dc.hasNext()){
+                Object nation = dc.next().get("nation");
+                if(nation != null){
+                    nations.add(nation.toString());
+                }
+            }
+        }
+
+        return nations;
+    }
+
+    public static Set<String> getAllNationsAsSet(){ //组合成set方便判断某个nation是否存在
+        DBCollection nationColl = MongoDriver.getNationCollection();
+        DBCursor dc = nationColl.find();
+        Set<String> nations = new HashSet<String>();
+        if(dc.size() >0){
+            while(dc.hasNext()){
+                DBObject next = dc.next();
+                String nation = next.get("nation").toString();
+                String pbid = next.get("pbid").toString();
+                nations.add(pbid.concat("_").concat(nation));
+            }
+        }
+        return nations;
+    }
+
+    public static void insertNations(Set<String> nations){
+        DBCollection nationColl = MongoDriver.getNationCollection();
+        List<DBObject> dbObjs = new ArrayList<DBObject>();
+        DBObject insertObject;
+        for(String nation : nations){
+            insertObject = new BasicDBObject();
+            int pos = nation.indexOf("_");
+            insertObject.put("pbid",Integer.valueOf(nation.substring(0,pos)));
+            insertObject.put("nation",nation.substring(pos+1));
+            dbObjs.add(insertObject);
+        }
+        nationColl.insert(dbObjs);
+    }
+
     public static void main(String[] args){
 //        System.out.println(MetricMapping.getProjectURLByte("www.lollygame.com"));
+
     }
 
 }

@@ -51,7 +51,7 @@ public class MetricMapping {
         if(pid == null){
             int start = projectName.indexOf(DOMAIN_SEPARATOR);
             if(start > 0){
-                int end = projectName.lastIndexOf(".");
+                int end = projectName.lastIndexOf(DOMAIN_SEPARATOR);
                 if(end > 0 && end > start){
                     String domain = projectName.substring(start+1,end);
                     pid = projectMapping.get(domain.toLowerCase());
@@ -60,6 +60,32 @@ public class MetricMapping {
 
         }
         return pid;
+    }
+
+    /**
+     * 人肉将所有projectname转换为短的projectname
+     * @return
+     */
+    public Map<String,Byte> getAllProjectShortNameMapping(){
+        Map<String,Byte> shortMapping = new HashMap<String, Byte>();
+        for(Map.Entry<String,Byte> pm : projectMapping.entrySet()){
+            String pname = pm.getKey();
+
+            int start = pname.indexOf(DOMAIN_SEPARATOR);
+            int end = pname.lastIndexOf(DOMAIN_SEPARATOR);
+
+            String shortName;
+            if(start == -1){
+                shortName = pname; //eg: 22find
+            }else if(start == end){
+                shortName = pname.substring(0,start); //eg: v9.com
+            }else{
+                shortName = pname.substring(start+1,end); //eg: www.22find.com
+            }
+
+            shortMapping.put(shortName,pm.getValue());
+        }
+        return shortMapping;
     }
 
     public Set<Byte> getAllProjectByteValue(){
@@ -131,6 +157,7 @@ public class MetricMapping {
     public static void main(String[] args){
 //        System.out.println(MetricMapping.getProjectURLByte("www.lollygame.com"));
 
+        System.out.println(MetricMapping.getInstance().getAllProjectShortNameMapping());
     }
 
 }

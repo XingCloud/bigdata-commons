@@ -62,7 +62,7 @@ public class MetricMapping {
         return pid;
     }
 
-    public Set<Byte> getAllProjectByte(){
+    public Set<Byte> getAllProjectByteValue(){
         return projects;
     }
 
@@ -77,6 +77,7 @@ public class MetricMapping {
         }
     }
 
+    //获取nation的工具方法
     public static Set<String> getNationsByProjectID(Byte pbid){
         DBObject queryObject = new BasicDBObject();
 

@@ -8,10 +8,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Author: liqiang
@@ -22,16 +20,16 @@ import java.util.regex.Pattern;
 public class MetricMapping {
 
     private static final String DEFAULT_PROJECT_PATH = "/project.properties";
-    public static final String DOMAIN_SEPARATOR = ".";
+    private static final String DOMAIN_SEPARATOR = ".";
 
     private static final Map<String,Byte> projectMapping= new HashMap<String,Byte>();
+    private static final Set<Byte> projects = new HashSet<Byte>();
 
     private static MetricMapping instance ;
-    private static Pattern domain;
 
     private MetricMapping(String path){
         //注意： 目前只用一个byte表示项目，范围为-127 +127，配置的时候得注意
-        loadConfig(path,projectMapping);
+        loadConfig(path);
     }
 
     public static synchronized MetricMapping getInstance(){
@@ -64,12 +62,18 @@ public class MetricMapping {
         return pid;
     }
 
-    private void loadConfig(String path,Map<String,Byte> mapping) {
+    public Set<Byte> getAllProjectByte(){
+        return projects;
+    }
+
+    private void loadConfig(String path) {
         Configuration config = Config.createConfig(DEFAULT_PROJECT_PATH, path, Config.ConfigFormat.properties);
         Iterator<String> metrics = config.getKeys();
         while(metrics.hasNext()){
             String k = metrics.next();
-            mapping.put(k.toLowerCase(),config.getByte(k));
+            Byte v = config.getByte(k);
+            projectMapping.put(k.toLowerCase(),v);
+            projects.add(v);
         }
     }
 
@@ -117,7 +121,7 @@ public class MetricMapping {
             insertObject = new BasicDBObject();
             int pos = nation.indexOf("_");
             insertObject.put("pbid",Integer.valueOf(nation.substring(0,pos)));
-            insertObject.put("nation",nation.substring(pos+1));
+            insertObject.put("nation",nation.substring(pos+1).toUpperCase());
             dbObjs.add(insertObject);
         }
         nationColl.insert(dbObjs);

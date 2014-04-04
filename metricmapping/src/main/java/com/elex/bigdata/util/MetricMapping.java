@@ -151,7 +151,7 @@ public class MetricMapping {
             insertObject = new BasicDBObject();
             int pos = nation.indexOf("_");
             insertObject.put("pbid",Integer.valueOf(nation.substring(0,pos)));
-            insertObject.put("nation",nation.substring(pos+1).toUpperCase());
+            insertObject.put("nation",nation.substring(pos+1).toLowerCase());
             dbObjs.add(insertObject);
         }
         nationColl.insert(dbObjs);
